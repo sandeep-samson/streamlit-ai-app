@@ -20,7 +20,7 @@ A simple AI-powered assistant web app built with [Streamlit](https://streamlit.i
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/sandeep-samson/streamlit-ai-assistant.git
+    git clone https://github.com/sandeep-samson/streamlit-ai-app.git
     cd streamlit-ai-assistant
     ```
 
