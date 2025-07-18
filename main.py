@@ -1,16 +1,15 @@
-import os
-from dotenv import load_dotenv
+# Import necessary libraries
+import ollama
+import tempfile
 import streamlit as st
+from langchain_chroma import Chroma
+from langchain.chains import RetrievalQA
 from langchain_ollama.llms import OllamaLLM
 from langchain.prompts import PromptTemplate
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain.chains import RetrievalQA
-import tempfile
+from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
 
-load_dotenv()
 
 # Set the page configuration
 st.set_page_config(
@@ -20,10 +19,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-ollama_model_name = os.getenv("OLLAMA_MODEL_NAME", "mistral")
+# Initialize session state for model selection
+if "model" not in st.session_state:
+    st.session_state['model'] = None
+
+# Fetch available models from Ollama
+models = [model[1]['model'] for model in enumerate(ollama.list()["models"])]
+st.session_state['model'] = st.selectbox("Chose your model", models)
 
 # Initialize the Ollama LLM
-llm = OllamaLLM(model=ollama_model_name)
+llm = OllamaLLM(model=st.session_state["model"])
 
 # Define the prompt template
 template = """ You are a helpful assistant. Answer the following question:
@@ -95,5 +100,5 @@ else:
 # Footer
 st.sidebar.markdown("---")
 st.sidebar.write("Powered by [Ollama](https://ollama.com) and [LangChain](https://langchain.com).")
-st.sidebar.write("Model: " + ollama_model_name)
+st.sidebar.write("Model: " + st.session_state['model'])
 st.sidebar.write("Version: 1.0.0")
